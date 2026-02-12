@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Citizen Portal - Civic Lens</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+            width: 100%;
+            max-width: 1000px;
+            overflow: hidden;
+            display: flex;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(135deg, #2a5c5c 0%, #1e3a3a 100%);
+            color: white;
+            padding: 25px 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 0 25px 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-title {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .sidebar-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .nav-item {
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-item.active {
+            background-color: rgba(255, 255, 255, 0.15);
+            border-left: 4px solid #38b2ac;
+        }
+
+        .nav-item i {
+            margin-right: 12px;
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .nav-text {
+            font-weight: 500;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: white;
+            color: #2a5c5c;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: #6b7280;
+            font-weight: 400;
+        }
+
+        .content {
+            padding: 30px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .form-container {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #2a5c5c;
+            box-shadow: 0 0 0 3px rgba(42, 92, 92, 0.1);
+        }
+
+        .file-input-container {
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .file-input {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-label {
+            display: inline-block;
+            padding: 12px 20px;
+            background: #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+
+        .file-input-label:hover {
+            background: #d1d5db;
+        }
+
+        .file-name {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .required {
+            color: #e53e3e;
+        }
+
+        .optional {
+            color: #6b7280;
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(90deg, #2a5c5c, #1e3a3a);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(42, 92, 92, 0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(42, 92, 92, 0.3);
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background-color: #e5e7eb;
+            transform: translateY(-1px);
+        }
+
+        .back-btn i {
+            margin-right: 8px;
+        }
+
+        .info-box {
+            background: #edf2f7;
+            border-left: 4px solid #2a5c5c;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #6b7280;
+            font-size: 0.9rem;
+            border-top: 1px solid #f3f4f6;
+        }
+
+        /* Image Preview Styles */
+        .image-preview-container {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .image-preview {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+            border: 1px solid #e5e7eb;
+        }
+
+        /* Confirmation Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .modal-icon {
+            font-size: 3rem;
+            color: #2a5c5c;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #1f2937;
+        }
+
+        .modal-message {
+            margin-bottom: 25px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .department-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: linear-gradient(90deg, #38b2ac, #2a5c5c);
+            color: white;
+            border-radius: 50px;
+            font-weight: 600;
+            margin: 15px 0;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-btn.confirm {
+            background: linear-gradient(90deg, #2a5c5c, #1e3a3a);
+            color: white;
+            border: none;
+        }
+
+        .modal-btn.cancel {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Track Progress Section (Hidden by Default) */
+        .track-section {
+            display: none;
+        }
+
+        .track-form {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 15px;
+            }
+
+            .nav-items {
+                display: flex;
+                overflow-x: auto;
+                padding-bottom: 10px;
+            }
+
+            .nav-item {
+                padding: 10px 15px;
+                white-space: nowrap;
+                border-left: none;
+                border-bottom: 3px solid transparent;
+            }
+
+            .nav-item.active {
+                border-left: none;
+                border-bottom: 3px solid #38b2ac;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .content {
+                padding: 20px;
+            }
+
+            .form-container {
+                padding: 20px;
+            }
+
+            .modal-content {
+                padding: 20px;
+            }
+
+            .modal-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">CIVIC LENS</div>
+                <div class="sidebar-subtitle">Citizen Portal</div>
+            </div>
+
+            <div class="nav-items">
+                <div class="nav-item active" data-target="report-section">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span class="nav-text">Report Problem</span>
+                </div>
+                <div class="nav-item" data-target="track-section">
+                    <i class="fas fa-search"></i>
+                    <span class="nav-text">Track Progress</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <header>
+                <h2 id="section-title">Report a Problem</h2>
+                <p class="subtitle" id="section-subtitle">Help us improve our community by reporting issues</p>
+            </header>
+
+            <div class="content">
+                <!-- Report Problem Section -->
+                <div id="report-section" class="active-section">
+                    <div class="info-box">
+                        <i class="fas fa-info-circle"></i> Your reports help us improve our community. Please provide
+                        accurate information.
+                    </div>
+
+                    <div class="form-container">
+                        <form id="issueForm" method="POST" action="{{ url_for('citizen') }}"
+                            enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="image">Upload Image of Issue <span class="required">*</span></label>
+                                <div class="file-input-container">
+                                    <label class="file-input-label">
+                                        <i class="fas fa-upload"></i> Choose Image File
+                                        <input type="file" id="image" name="image" class="file-input" accept="image/*"
+                                            required>
+                                    </label>
+                                </div>
+                                <div class="file-name" id="file-name">No file chosen</div>
+
+                                <!-- Image Preview -->
+                                <div class="image-preview-container" id="imagePreviewContainer">
+                                    <img id="imagePreview" class="image-preview" src="" alt="Image Preview">
+                                    <button type="button" id="removeImageBtn" class="btn"
+                                        style="background: #e53e3e; max-width: 200px; margin: 0 auto;">
+                                        <i class="fas fa-trash"></i> Remove Image
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="address">Location Information <span class="required">*</span></label>
+                                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                                    <input type="text" id="address" name="address" class="input-field"
+                                        placeholder="Enter address or drag marker on map" required>
+                                    <button type="button" id="locateBtn" class="btn"
+                                        style="width: auto; padding: 10px 15px;" title="Use My Current Location">
+                                        <i class="fas fa-location-arrow"></i>
+                                    </button>
+                                </div>
+                                <div id="map"
+                                    style="height: 300px; width: 100%; border-radius: 8px; border: 1px solid #d1d5db; margin-bottom: 10px;">
+                                </div>
+                                <input type="hidden" id="latitude" name="latitude">
+                                <input type="hidden" id="longitude" name="longitude">
+                                <small class="overall-help" style="color: #6b7280; font-size: 0.85rem;">
+                                    <i class="fas fa-info-circle"></i> Drag the marker to pinpoint the exact location.
+                                </small>
+                            </div>
+
+                            <!-- Leaflet CSS and JS -->
+                            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+                                integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+                            <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+                                integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function () {
+                                    // Default to a central location (e.g., Delhi, India) if geolocation fails
+                                    const defaultLat = 28.6139;
+                                    const defaultLng = 77.2090;
+
+                                    const map = L.map('map').setView([defaultLat, defaultLng], 13);
+
+                                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                    }).addTo(map);
+
+                                    let marker = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(map);
+
+                                    // Update hidden inputs when marker is dragged
+                                    function updatePosition(lat, lng) {
+                                        document.getElementById('latitude').value = lat;
+                                        document.getElementById('longitude').value = lng;
+                                        // Optional: Reverse geocoding could go here to update the address field
+                                    }
+
+                                    marker.on('dragend', function (event) {
+                                        const position = marker.getLatLng();
+                                        updatePosition(position.lat, position.lng);
+                                    });
+
+                                    // Initial update
+                                    updatePosition(defaultLat, defaultLng);
+
+                                    // Geolocation button
+                                    document.getElementById('locateBtn').addEventListener('click', function () {
+                                        if (navigator.geolocation) {
+                                            const btn = this;
+                                            const originalContent = btn.innerHTML;
+                                            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+                                            navigator.geolocation.getCurrentPosition(function (position) {
+                                                const lat = position.coords.latitude;
+                                                const lng = position.coords.longitude;
+
+                                                map.setView([lat, lng], 16);
+                                                marker.setLatLng([lat, lng]);
+                                                updatePosition(lat, lng);
+
+                                                btn.innerHTML = originalContent;
+                                            }, function (error) {
+                                                console.error("Error getting location:", error);
+                                                alert("Unable to retrieve your location. Please ensure location services are enabled.");
+                                                btn.innerHTML = originalContent;
+                                            });
+                                        } else {
+                                            alert("Geolocation is not supported by your browser.");
+                                        }
+                                    });
+
+                                    // Try to get location automatically on load
+                                    if (navigator.geolocation) {
+                                        navigator.geolocation.getCurrentPosition(function (position) {
+                                            const lat = position.coords.latitude;
+                                            const lng = position.coords.longitude;
+                                            map.setView([lat, lng], 16);
+                                            marker.setLatLng([lat, lng]);
+                                            updatePosition(lat, lng);
+                                        });
+                                    }
+                                });
+                            </script>
+
+                            <div class="form-group">
+                                <label for="email">Your Email <span class="required">*</span></label>
+                                <input type="email" id="email" name="email" class="input-field"
+                                    placeholder="Enter your email for updates" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="description">Description <span class="optional">(optional)</span></label>
+                                <textarea id="description" name="description" class="input-field" rows="3"
+                                    placeholder="Please provide additional details about the issue"></textarea>
+                            </div>
+
+                            <button type="button" id="submitBtn" class="btn">
+                                <i class="fas fa-paper-plane"></i> Submit Issue
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Track Progress Section -->
+                <div id="track-section" class="track-section">
+                    <div class="info-box">
+                        <i class="fas fa-info-circle"></i> Track the status of your previously reported issues using
+                        your tracking ID.
+                    </div>
+
+                    <div class="track-form">
+                        <form id="trackForm" method="POST" action="{{ url_for('track_issue') }}">
+                            <div class="form-group">
+                                <label for="tracking-id">Tracking ID <span class="required">*</span></label>
+                                <input type="text" id="tracking-id" name="tracking_id" class="input-field"
+                                    placeholder="Enter your issue tracking ID" required>
+                            </div>
+
+                            <button type="submit" class="btn">
+                                <i class="fas fa-search"></i> Track Issue
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- This section would be populated by the backend -->
+                    <div class="track-results" style="display: none;">
+                        <h3 style="margin-bottom: 15px;">Issue Status</h3>
+                        <div style="background: #f9fafb; padding: 20px; border-radius: 8px;">
+                            <p><strong>Issue:</strong> Pothole on Main Street</p>
+                            <p><strong>Status:</strong> <span style="color: #38b2ac;">In Progress</span></p>
+                            <p><strong>Reported on:</strong> September 15, 2023</p>
+                            <p><strong>Estimated resolution:</strong> September 30, 2023</p>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="{{ url_for('home') }}" class="back-btn">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </a>
+            </div>
+
+            <footer>
+                <p>Civic Lens &copy; 2025. Building stronger communities together.</p>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay" id="confirmationModal">
+        <div class="modal-content">
+            <div class="modal-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h3 class="modal-title">Confirm Submission</h3>
+            <p class="modal-message">Please review your information before submitting. You'll receive a confirmation
+                email with a tracking ID.</p>
+
+            <div class="modal-buttons">
+                <button class="modal-btn confirm" id="confirmSubmit">Yes, Submit</button>
+                <button class="modal-btn cancel" id="cancelSubmit">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navigation between sections
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function () {
+                // Update active nav item
+                document.querySelectorAll('.nav-item').forEach(nav => {
+                    nav.classList.remove('active');
+                });
+                this.classList.add('active');
+
+                // Show the selected section
+                const targetId = this.getAttribute('data-target');
+                document.querySelectorAll('.active-section, .track-section').forEach(section => {
+                    section.style.display = 'none';
+                });
+                document.getElementById(targetId).style.display = 'block';
+
+                // Update header text
+                if (targetId === 'report-section') {
+                    document.getElementById('section-title').textContent = 'Report a Problem';
+                    document.getElementById('section-subtitle').textContent = 'Help us improve our community by reporting issues';
+                } else {
+                    document.getElementById('section-title').textContent = 'Track Progress';
+                    document.getElementById('section-subtitle').textContent = 'Check the status of your reported issues';
+                }
+            });
+        });
+
+        // Show selected file name and preview
+        document.getElementById('image').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('file-name').textContent = file.name;
+
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    const preview = document.getElementById('imagePreview');
+                    preview.src = event.target.result;
+                    document.getElementById('imagePreviewContainer').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                document.getElementById('file-name').textContent = 'No file chosen';
+                document.getElementById('imagePreviewContainer').style.display = 'none';
+            }
+        });
+
+        // Remove image functionality
+        document.getElementById('removeImageBtn').addEventListener('click', function () {
+            document.getElementById('image').value = '';
+            document.getElementById('file-name').textContent = 'No file chosen';
+            document.getElementById('imagePreviewContainer').style.display = 'none';
+        });
+
+        // Form submission with confirmation
+        document.getElementById('submitBtn').addEventListener('click', function () {
+            const fileInput = document.getElementById('image');
+            const addressInput = document.getElementById('address');
+            const emailInput = document.getElementById('email');
+
+            if (!fileInput.value) {
+                alert('Please select an image to upload.');
+                fileInput.focus();
+                return;
+            }
+
+            if (!addressInput.value.trim()) {
+                alert('Please provide location information.');
+                addressInput.focus();
+                return;
+            }
+
+            if (!emailInput.value.trim()) {
+                alert('Please provide your email address.');
+                emailInput.focus();
+                return;
+            }
+
+            // Show the confirmation modal
+            document.getElementById('confirmationModal').style.display = 'flex';
+        });
+
+        // Confirm submission → submit form to backend
+        document.getElementById('confirmSubmit').addEventListener('click', function () {
+            document.getElementById('issueForm').submit();
+        });
+
+        // Cancel submission → hide modal
+        document.getElementById('cancelSubmit').addEventListener('click', function () {
+            document.getElementById('confirmationModal').style.display = 'none';
+        });
+
+        // Close modal if clicked outside
+        document.getElementById('confirmationModal').addEventListener('click', function (e) {
+            if (e.target === this) this.style.display = 'none';
+        });
+    </script>
+</body>
+
+</html>
